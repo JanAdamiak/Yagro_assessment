@@ -42,3 +42,6 @@ class Simulation:
         while self.steps > 0:
             self.resolve_one_step_of_time()
             self.steps =- 1
+            print(self.conveyor_belt.contents)
+
+        print(self.basket)
