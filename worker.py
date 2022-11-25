@@ -1,7 +1,6 @@
 import itertools
 
-from conveyor_belt import FactoryItem
-from enums import WorkerState, COMPONENTS
+from enums import WorkerState, COMPONENTS, FactoryItem
 
 
 class Worker:
@@ -19,11 +18,6 @@ class Worker:
         Worker attempts to pick up a spare part.
         If 2 different components present, changes state to ASSEMBLING and starts assembling it.
         """
-        if self.current_state != WorkerState.LOOKING_FOR_PARTS:
-            raise BaseException(
-                f"pick_up_part:: something went wrong, state: {self.current_state}"
-            )
-
         self.inventory.add(item)
 
         if self.inventory == COMPONENTS:
@@ -38,14 +32,6 @@ class Worker:
         If finished, completed item is put in their inventory
         and worker's state changes to WAITING_TO_DROP_ITEM.
         """
-        if (
-            self.current_state != WorkerState.ASSEMBLING
-            or self.time_until_completion < 0
-        ):
-            raise BaseException(
-                f"continue_assembling:: something went wrong, state: {self.current_state}, timer: {self.time_until_completion}"
-            )
-
         self.time_until_completion = self.time_until_completion - 1
 
         if self.time_until_completion == 0:
@@ -54,21 +40,14 @@ class Worker:
             return True
         return False
 
-    def drop_completed_item(self) -> bool:
+    def drop_completed_item(self) -> True:
         """
         Worker drops completed item on the belt.
         It empties their inventory and transitions them back to the state LOOKING_FOR_PARTS.
         """
-        if self.current_state != WorkerState.WAITING_TO_DROP_ITEM:
-            raise BaseException(
-                f"drop_completed_item:: something went wrong, state: {self.current_state}"
-            )
-
-        if self.time_until_completion == 0:
-            self.new_state = WorkerState.LOOKING_FOR_PARTS
-            self.inventory = set()
-            return True
-        return False
+        self.new_state = WorkerState.LOOKING_FOR_PARTS
+        self.inventory = set()
+        return True
 
     def is_part_desired_by_worker(self, item: FactoryItem) -> bool:
         """A boolean method to check if worker already has part in their inventory"""
