@@ -20,22 +20,21 @@ class Simulation:
         self.resolve_worker_actions()
 
         self.cleanup_workers()
+        self.steps = self.steps - 1
 
     def place_workers_along_the_belt(self, pairs_of_workers) -> Dict[int, List[Worker]]:
         return {n:[Worker(), Worker()] for n in range(0, pairs_of_workers)}
 
     def resolve_belt_action(self) -> None:
         dropped_item = self.conveyor_belt.move_belt()
+
         if dropped_item != FactoryItem.EMPTY_SPACE:
-            self.basket[dropped_item] = self.basket[dropped_item] + 1
+            self.basket[dropped_item] = self.basket.get(dropped_item, 0) + 1
         
     def resolve_worker_actions(self) -> None:
         for belt_index, workers in self.workers.items():
             item = self.conveyor_belt.contents[belt_index]
-            print("resolving worker actions:")
-            # print(workers)
-            print(item)
-
+            
             for worker in workers:
                 if worker.current_state == WorkerState.ASSEMBLING:
                     is_worker_changing_state = worker.continue_assembling()
@@ -69,7 +68,7 @@ class Simulation:
     def run_simulation(self) -> None:
         while self.steps > 0:
             self.resolve_one_step_of_time()
-            self.steps =- 1
-            print(self.conveyor_belt.contents)
+            
+            # print(self.conveyor_belt.contents)
 
         print(self.basket)

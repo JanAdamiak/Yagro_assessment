@@ -1,9 +1,14 @@
+import itertools
+
 from conveyor_belt import FactoryItem
 from enums import WorkerState, COMPONENTS
 
 
 class Worker:
+    id_iter = itertools.count()
+
     def __init__(self) -> None:
+        self.id = next(self.id_iter)
         self.current_state = WorkerState.LOOKING_FOR_PARTS
         self.inventory = set()
         self.time_until_completion = 0
@@ -11,21 +16,21 @@ class Worker:
 
     def pick_up_part(self, item: FactoryItem) -> bool:
         if self.current_state != WorkerState.LOOKING_FOR_PARTS:
-            raise BaseException("pick_up_part:: something went wrong")
+            raise BaseException(f"pick_up_part:: something went wrong, state: {self.current_state}")
         
         self.inventory.add(item)
 
         if self.inventory == COMPONENTS:
-            self.current_state = WorkerState.ASSEMBLING
+            self.new_state = WorkerState.ASSEMBLING
             self.time_until_completion = 3
             return True
         return False
 
     def continue_assembling(self) -> bool:
         if self.current_state != WorkerState.ASSEMBLING or self.time_until_completion < 0:
-            raise BaseException("continue_assembling:: something went wrong")
+            raise BaseException(f"continue_assembling:: something went wrong, state: {self.current_state}, timer: {self.time_until_completion}")
 
-        self.time_until_completion =- 1
+        self.time_until_completion = self.time_until_completion - 1
 
         if self.time_until_completion == 0:
             self.new_state = WorkerState.WAITING_TO_DROP_ITEM
@@ -35,7 +40,7 @@ class Worker:
 
     def drop_completed_item(self) -> bool:
         if self.current_state != WorkerState.WAITING_TO_DROP_ITEM:
-            raise BaseException("drop_completed_item:: something went wrong")
+            raise BaseException(f"drop_completed_item:: something went wrong, state: {self.current_state}")
 
         if self.time_until_completion == 0:
             self.new_state = WorkerState.LOOKING_FOR_PARTS
