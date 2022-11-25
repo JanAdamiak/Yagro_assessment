@@ -16,8 +16,10 @@ class Worker:
 
     def pick_up_part(self, item: FactoryItem) -> bool:
         if self.current_state != WorkerState.LOOKING_FOR_PARTS:
-            raise BaseException(f"pick_up_part:: something went wrong, state: {self.current_state}")
-        
+            raise BaseException(
+                f"pick_up_part:: something went wrong, state: {self.current_state}"
+            )
+
         self.inventory.add(item)
 
         if self.inventory == COMPONENTS:
@@ -27,8 +29,13 @@ class Worker:
         return False
 
     def continue_assembling(self) -> bool:
-        if self.current_state != WorkerState.ASSEMBLING or self.time_until_completion < 0:
-            raise BaseException(f"continue_assembling:: something went wrong, state: {self.current_state}, timer: {self.time_until_completion}")
+        if (
+            self.current_state != WorkerState.ASSEMBLING
+            or self.time_until_completion < 0
+        ):
+            raise BaseException(
+                f"continue_assembling:: something went wrong, state: {self.current_state}, timer: {self.time_until_completion}"
+            )
 
         self.time_until_completion = self.time_until_completion - 1
 
@@ -40,7 +47,9 @@ class Worker:
 
     def drop_completed_item(self) -> bool:
         if self.current_state != WorkerState.WAITING_TO_DROP_ITEM:
-            raise BaseException(f"drop_completed_item:: something went wrong, state: {self.current_state}")
+            raise BaseException(
+                f"drop_completed_item:: something went wrong, state: {self.current_state}"
+            )
 
         if self.time_until_completion == 0:
             self.new_state = WorkerState.LOOKING_FOR_PARTS

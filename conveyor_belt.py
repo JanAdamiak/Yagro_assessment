@@ -8,8 +8,8 @@ from exceptions import TriedToPickUpNonComponentItem, NotAnEmptySpace
 
 class ConveyorBelt:
     def __init__(self, length: int) -> None:
-            # self.length = length
-            self.contents = [FactoryItem.EMPTY_SPACE] * length
+        # self.length = length
+        self.contents = [FactoryItem.EMPTY_SPACE] * length
 
     def move_belt(self) -> FactoryItem:
         new_item = spawn_random_item()
@@ -20,7 +20,7 @@ class ConveyorBelt:
     def pick_up_item(self, index: int) -> None:
         if not self.contents[index] in COMPONENTS:
             raise TriedToPickUpNonComponentItem
-        
+
         self.contents[index] = FactoryItem.EMPTY_SPACE
 
     def place_completed_item(self, index: int) -> None:

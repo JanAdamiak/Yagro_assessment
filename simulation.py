@@ -6,7 +6,9 @@ from enums import WorkerState, FactoryItem, COMPONENTS
 
 
 class Simulation:
-    def __init__(self, length_of_conveyor_belt: int, steps: int, pairs_of_workers: int) -> None:
+    def __init__(
+        self, length_of_conveyor_belt: int, steps: int, pairs_of_workers: int
+    ) -> None:
         self.conveyor_belt = ConveyorBelt(length_of_conveyor_belt)
         self.steps = steps
         self.workers = self.place_workers_along_the_belt(pairs_of_workers)
@@ -23,18 +25,18 @@ class Simulation:
         self.steps = self.steps - 1
 
     def place_workers_along_the_belt(self, pairs_of_workers) -> Dict[int, List[Worker]]:
-        return {n:[Worker(), Worker()] for n in range(0, pairs_of_workers)}
+        return {n: [Worker(), Worker()] for n in range(0, pairs_of_workers)}
 
     def resolve_belt_action(self) -> None:
         dropped_item = self.conveyor_belt.move_belt()
 
         if dropped_item != FactoryItem.EMPTY_SPACE:
             self.basket[dropped_item] = self.basket.get(dropped_item, 0) + 1
-        
+
     def resolve_worker_actions(self) -> None:
         for belt_index, workers in self.workers.items():
             item = self.conveyor_belt.contents[belt_index]
-            
+
             for worker in workers:
                 if worker.current_state == WorkerState.ASSEMBLING:
                     is_worker_changing_state = worker.continue_assembling()
@@ -43,13 +45,16 @@ class Simulation:
 
             if item in COMPONENTS:
                 for worker in workers:
-                    if worker.current_state == WorkerState.LOOKING_FOR_PARTS and worker.is_part_desired_by_worker(item):
+                    if (
+                        worker.current_state == WorkerState.LOOKING_FOR_PARTS
+                        and worker.is_part_desired_by_worker(item)
+                    ):
                         self.conveyor_belt.pick_up_item(belt_index)
                         is_worker_changing_state = worker.pick_up_part(item)
                         if is_worker_changing_state:
                             self.workers_requiring_cleanup.append(worker)
                         break
-                        
+
             elif item == FactoryItem.EMPTY_SPACE:
                 for worker in workers:
                     if worker.current_state == WorkerState.WAITING_TO_DROP_ITEM:
@@ -68,7 +73,7 @@ class Simulation:
     def run_simulation(self) -> None:
         while self.steps > 0:
             self.resolve_one_step_of_time()
-            
+
             # print(self.conveyor_belt.contents)
 
         print(self.basket)

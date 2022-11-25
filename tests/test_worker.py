@@ -1,6 +1,7 @@
 from worker import Worker
 from enums import WorkerState
 
+
 def test_initialising_worker():
     worker = Worker()
 
@@ -8,5 +9,4 @@ def test_initialising_worker():
     assert worker.inventory == set()
 
 
-def test_pick_up_part():
-    
+# def test_pick_up_part():
