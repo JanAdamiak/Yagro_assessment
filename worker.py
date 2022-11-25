@@ -51,9 +51,7 @@ class Worker:
 
     def is_part_desired_by_worker(self, item: FactoryItem) -> bool:
         """A boolean method to check if worker already has part in their inventory"""
-        if item in COMPONENTS and item not in self.inventory:
-            return True
-        return False
+        return item in COMPONENTS and item not in self.inventory
 
     def set_new_state(self) -> None:
         """A method to change to new state stored in temporary state. Changes temporary state back to None."""
