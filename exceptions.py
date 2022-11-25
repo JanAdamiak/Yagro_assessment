@@ -4,3 +4,7 @@ class TriedToPickUpNonComponentItem(Exception):
 
 class NotAnEmptySpace(Exception):
     pass
+
+
+class TooManyWorkersAtBelt(Exception):
+    pass
